@@ -40,8 +40,6 @@ final class DiaryTableViewController: UITableViewController {
     
     @IBAction func addBarButtonItemTapped(_ sender: UIBarButtonItem) {
         
-        
-        
         // 1. 스토리보드 파일 찾기
         let sb = UIStoryboard(name: "Main", bundle: nil)
         
@@ -50,6 +48,8 @@ final class DiaryTableViewController: UITableViewController {
         
         // 자기가 속한 storyboard 알고있음, 같은 스토리 보드에 있다면 sb를 사용하지 않아도 접근할 수 있다.
         let vc = storyboard?.instantiateViewController(withIdentifier: "AddViewController") as! AddViewController
+        
+        vc.type = .add
         
         // 2-1(옵션) 네비게이션 컨트롤러가 있는 형태(제목바)로 Present 하고 싶은 경우
         // nav를 사용한다면, present와 화면 전환 방식도 nav로 수정 해주어야 함!!
@@ -99,11 +99,15 @@ extension DiaryTableViewController {
         didSelectRowAt indexPath: IndexPath
     ) {
         let sb = UIStoryboard(name: "Main", bundle: nil)
-        let vc = sb.instantiateViewController(withIdentifier: "DetailViewController") as! DetailViewController
-        vc.contents = list[indexPath.row]
+        let vc = sb.instantiateViewController(withIdentifier: "AddViewController") as! AddViewController
         
+        vc.type = .edit
+        vc.textViewContents = list[indexPath.row]
+        // vc.contents = list[indexPath.row]
+        
+        // 값 전달 시 아울렛을 활용할 수 없다.
         // contentsLabel이 contents보다 늦게 생성돼서 nil 값이라 error 발생한다.
-//        vc.contentsLabel.text = list[indexPath.row]
+        // vc.contentsLabel.text = list[indexPath.row]
         
         // 인터페이스 빌더에 네비게이션 컨트롤러가 임베드 되어야만 Push가 동작한다.
         navigationController?.pushViewController(vc, animated: true)
