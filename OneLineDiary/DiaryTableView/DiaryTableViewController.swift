@@ -36,6 +36,8 @@ final class DiaryTableViewController: UITableViewController {
         //   2. label numberOfLines
         //   3. AutoLayout(여백)
         tableView.rowHeight = UITableView.automaticDimension
+        
+        navigationItem.backButtonTitle = ""
     }
     
     @IBAction func addBarButtonItemTapped(_ sender: UIBarButtonItem) {

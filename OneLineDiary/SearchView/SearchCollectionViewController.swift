@@ -9,6 +9,19 @@ import UIKit
 
 final class SearchCollectionViewController: UICollectionViewController {
 
+    var searchList: [String] = [] {
+        didSet {
+            collectionView.reloadData()
+        }
+    }
+    
+    let list = [
+        "iOS", "iPad", "Android", "Apple",
+        "Watch", "사과", "사자", "호랑이"
+    ]
+    
+    let searchBar = UISearchBar()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -22,6 +35,15 @@ final class SearchCollectionViewController: UICollectionViewController {
         )
         
         setCollectionViewLayout()
+        
+        searchBar.placeholder = "검색어를 입력해주세요."
+        searchBar.showsCancelButton = true
+        
+        navigationItem.titleView = searchBar
+        
+        collectionView.keyboardDismissMode = .onDrag
+        
+        searchBar.delegate = self
     }
     
     private func setCollectionViewLayout() {
@@ -46,12 +68,16 @@ final class SearchCollectionViewController: UICollectionViewController {
         collectionView.collectionViewLayout = layout
     }
     
+  
+}
+
+extension SearchCollectionViewController: UISearchBarDelegate {
     // 1. cell 갯수
     override func collectionView(
         _ collectionView: UICollectionView,
         numberOfItemsInSection section: Int
     ) -> Int {
-        return 100
+        return searchList.count
     }
     
     // 2.
@@ -66,9 +92,41 @@ final class SearchCollectionViewController: UICollectionViewController {
         ) as! SearchCollectionViewCell
     
         cell.backgroundColor = .brown
-        cell.contentsLabel.text = "\(indexPath)"
+        cell.contentsLabel.text = searchList[indexPath.item]
         
         return cell
     }
     
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        print("================================================")
+        
+        searchList.removeAll()
+        
+        for item in list {
+            if item.contains(searchBar.text!) {
+                searchList.append(item)
+                print(searchList)
+            }
+        }
+        
+        searchBar.text = ""
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        
+    }
+    
+    func searchBar(
+        _ searchBar: UISearchBar,
+        textDidChange searchText: String
+    ) {
+        searchList.removeAll()
+        
+        for item in list {
+            if item.contains(searchBar.text!) {
+                searchList.append(item)
+                print(searchList)
+            }
+        }
+    }
 }
