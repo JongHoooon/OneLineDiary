@@ -7,25 +7,25 @@
 
 import UIKit
 
+import Alamofire
+import SwiftyJSON
+
 class LottoViewController: UIViewController,
                            UIPickerViewDelegate,
                            UIPickerViewDataSource {
     
-    
-//    var list = [
-//        "영화", "드라마", "애니메이션",
-//        "SF", "가족", "로맨스", "스릴러"
-//    ]
-    
-//    var list = Array(repeating: "A", count: 100)
-    var list: [Int] = Array(1...1100).reversed()
+    var list: [Int] = Array(1...1079).reversed()
     
     @IBOutlet weak var numberTextField: UITextField!
     let pickerView = UIPickerView()
     
+    
+    @IBOutlet weak var drwtNumberLabel: UILabel!
+    @IBOutlet weak var dateLabel: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+    
         numberTextField.inputView = pickerView
         
         pickerView.delegate = self
@@ -33,7 +33,41 @@ class LottoViewController: UIViewController,
         
         numberTextField.tintColor = .clear
     }
+    
+    func callRequest(drwNo: Int) {
         
+        let url = "https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=\(drwNo)"
+        
+        AF.request(
+            url,
+            method: .get
+        )
+        .validate()
+        .responseJSON { response in
+            switch response.result {
+            case .success(let value):
+                let json = JSON(value)
+                
+                let date = json["drwNoDate"].stringValue
+                var drwtNums: [String] = []
+                for i in 1...6 {
+                    drwtNums.append(String(json["drwtNo\(i)"].intValue))
+                }
+                drwtNums.append(String(json["bnusNo"].intValue))
+                
+                self.drwtNumberLabel.text = drwtNums.joined(separator: " ")
+                self.dateLabel.text = "\(date)"
+                
+                print("JSON: \(json)")
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+}
+
+extension LottoViewController {
+    
     func numberOfComponents(
         in pickerView: UIPickerView
     ) -> Int {
@@ -52,8 +86,10 @@ class LottoViewController: UIViewController,
         didSelectRow row: Int,
         inComponent component: Int
     ) {
-        print("selected \(row) \(component)")
         numberTextField.text = "\(list[row])"
+        
+        let drwNo = Int(list[row])
+        callRequest(drwNo: drwNo)
     }
     
     func pickerView(
@@ -63,4 +99,5 @@ class LottoViewController: UIViewController,
     ) -> String? {
         return "\(list[row])"
     }
+    
 }
