@@ -10,18 +10,18 @@ import UIKit
 import Alamofire
 import SwiftyJSON
 
-class LottoViewController: UIViewController,
+final class LottoViewController: UIViewController,
                            UIPickerViewDelegate,
                            UIPickerViewDataSource {
     
-    var list: [Int] = Array(1...1079).reversed()
+    private var list: [Int] = Array(1...1079).reversed()
     
-    @IBOutlet weak var numberTextField: UITextField!
-    let pickerView = UIPickerView()
+    @IBOutlet weak private var numberTextField: UITextField!
+    private let pickerView = UIPickerView()
     
     
-    @IBOutlet weak var drwtNumberLabel: UILabel!
-    @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak private var drwtNumberLabel: UILabel!
+    @IBOutlet weak private var dateLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,9 +32,10 @@ class LottoViewController: UIViewController,
         pickerView.dataSource = self
         
         numberTextField.tintColor = .clear
+        
     }
     
-    func callRequest(drwNo: Int) {
+    private func callRequest(drwNo: Int) {
         
         let url = "https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=\(drwNo)"
         
