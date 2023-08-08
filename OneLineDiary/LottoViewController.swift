@@ -33,6 +33,9 @@ final class LottoViewController: UIViewController,
         
         numberTextField.tintColor = .clear
         
+        let defaultDrwNo = 1079
+        numberTextField.text = "\(defaultDrwNo)"
+        callRequest(drwNo: defaultDrwNo)
     }
     
     private func callRequest(drwNo: Int) {
